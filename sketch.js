@@ -18,17 +18,19 @@ function draw() {
 }
 
 class Flowers {
+  #flowers
+
   constructor(count = 100) {
     this.count = count
-    this.flowers = this.createFlowers()
+    this.#flowers = this._createFlowers()
   }
 
-  createFlowers() {
+  _createFlowers() {
     return [...Array(this.count)].map(() => new Flower())
   }
 
   drawFlowers() {
-    this.flowers.forEach((flower) => flower.drawFlower())
+    this.#flowers.forEach((flower) => flower.drawFlower())
   }
 }
 
@@ -43,32 +45,33 @@ class Flower {
     this.positionX = random(0, width)
     this.positionY = random(0, height)
     this.isGrowing = true
-    this.growthRate = 1 + random() * 0.03
+    this.growthRate = 1.01 + random() * 0.02
+    this.petalCount = floor(random() * 13) + 12
   }
 
   drawFlower() {
     push()
     translate(this.positionX, this.positionY)
-    this.drawPetals()
-    this.drawPistil()
+    this._drawPetals()
+    this._drawPistil()
     pop()
-    this.changeSize()
+    this._changeSize()
   }
 
-  drawPetals() {
+  _drawPetals() {
     fill(this.petalColor)
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < this.petalCount; i++) {
       rect(0, -this.size / 2, this.size * 2, this.size, 0, this.size, this.size, 0)
-      rotate(30)
+      rotate(360 / this.petalCount)
     }
   }
 
-  drawPistil() {
+  _drawPistil() {
     fill(this.pistilColor)
     ellipse(0, 0, this.size)
   }
 
-  changeSize() {
+  _changeSize() {
     if (this.size > this.maxSize) this.isGrowing = false
     if (this.size < this.minSize) this.isGrowing = true
     if (this.isGrowing) this.size *= this.growthRate
